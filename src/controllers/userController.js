@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const User = require('../models/User');
 module.exports = {
   async create(req, res) {
@@ -35,7 +36,8 @@ module.exports = {
           .status(400)
           .json({ message: "An account with this email already exists." });
       }
-      const passwordHash = password;
+      const salt = await bcrypt.genSalt();
+      const passwordHash = await bcrypt.hash(password, salt);
       const user = new User({
         email,
         passwordHash,
